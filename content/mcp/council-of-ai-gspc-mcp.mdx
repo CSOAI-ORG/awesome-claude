@@ -3,7 +3,7 @@ title: Council of AI GSPC MCP for Claude
 slug: council-of-ai-gspc-mcp
 category: mcp
 description: >-
-  Live 22-axis GSPC board, Ed25519-signed measurement cards, and a public Merkle
+  Live GSPC board, Ed25519-signed measurement cards, and a public Merkle
   root at councilof.ai. Measurement, not certification. Verification is free.
 cardDescription: "Read the live GSPC board and verify signed cards. Measurement, not certification."
 seoTitle: "Council of AI GSPC MCP for Claude — signed measurement, not certification"
@@ -51,11 +51,11 @@ prerequisites:
   - "Optional: npx and the csoai-gspc-mcp package if you prefer stdio instead of HTTP."
 safetyNotes:
   - "Free tools are read-only: board totals, axis rows, card list, root, verify."
-  - "Paid tools (commission_card, art50_marking_evidence, rwa_evidence, receipts_batch) return HTTP 402 until an x402 USDC payment on Base is attached. A 402 is a price quote, not settlement."
+  - "Paid capabilities return an x402 payment challenge when payment is required. Inspect the advertised tool and challenge before paying USDC on Base. A 402 is not settlement."
   - "Nothing here certifies a system, sells a rank, or remediates."
 privacyNotes:
   - "Verification sends the card bytes or URL you supply to councilof.ai. Do not paste secrets inside a card body."
-  - "No API key is required for the seven free readers."
+  - "No API key is required for the free readers."
 tags:
   - gspc
   - measurement
@@ -75,9 +75,9 @@ robotsFollow: true
 ## Overview
 
 **Council of AI GSPC** is the remote MCP door at [https://councilof.ai/mcp](https://councilof.ai/mcp).
-It reads the live 22-axis GSPC board, lists signed measurement cards, and verifies a card under the published Ed25519 rule. **Measurement, not certification** — empty cells stay empty; UNMEASURED is a first-class answer.
+It reads the living GSPC board, lists signed measurement cards, and verifies a card under the published Ed25519 rule. **Measurement, not certification** — empty cells stay empty; UNMEASURED is a first-class answer.
 
-Seven tools are free. Four paid tools speak x402 (USDC on Base). Calling a paid tool without payment returns HTTP 402, which is a quote, not a sale.
+The remote HTTP client discovers the current catalogue through MCP tools/list. The pinned stdio package below carries its own versioned catalogue; it is not identical to every future remote release. Free readers require no API key. Paid capabilities are opt-in x402 (USDC on Base); HTTP 402 is a payment challenge, not a sale.
 
 ## Key capabilities
 
@@ -89,7 +89,9 @@ Seven tools are free. Four paid tools speak x402 (USDC on Base). Calling a paid 
 | `list_cards` | free | Signed-card index vs store count, disagreement shown |
 | `get_root` | free | Public Merkle root |
 | `get_card` | free | Fetch one published card |
-| Paid x402 tools | USDC on Base | `commission_card`, `art50_marking_evidence`, `rwa_evidence`, `receipts_batch` |
+| `verify_inclusion` | free | Check a digest against the public-root Merkle tree |
+| `x402_trust` | free | Read the public catalogue-measurement snapshot; a challenge is not delivery |
+| Paid x402 tools | USDC on Base | Scoped evidence work, as advertised by the client catalogue |
 
 ## Installation
 
@@ -106,13 +108,13 @@ claude mcp add --transport http gspc https://councilof.ai/mcp
   "mcpServers": {
     "gspc": {
       "command": "npx",
-      "args": ["-y", "csoai-gspc-mcp"]
+      "args": ["-y", "csoai-gspc-mcp@0.2.2"]
     }
   }
 }
 ```
 
-The npm package `csoai-gspc-mcp@0.2.1` talks to the same live endpoints.
+The npm package is pinned to `csoai-gspc-mcp@0.2.2`. It exposes eight free tools and four paid tools in that published version and reads the live public sources. Use remote HTTP discovery for the current server catalogue.
 
 ## Requirements
 
@@ -129,6 +131,6 @@ The npm package `csoai-gspc-mcp@0.2.1` talks to the same live endpoints.
 ## Source Verification Notes
 
 - Remote MCP: `https://councilof.ai/mcp` (live).
-- Official MCP Registry: `io.github.CSOAI-ORG/gspc`.
+- Official MCP Registry: [`io.github.CSOAI-ORG/gspc`](https://registry.modelcontextprotocol.io/v0.1/servers/io.github.CSOAI-ORG%2Fgspc/versions/latest). Registry publication is separate from invoking or verifying a tool.
 - GitHub: [CSOAI-ORG/councilof-ai](https://github.com/CSOAI-ORG/councilof-ai).
 - npm: [csoai-gspc-mcp](https://www.npmjs.com/package/csoai-gspc-mcp).
